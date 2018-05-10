@@ -37,7 +37,7 @@ class TablePage extends Component{
 		// 	console.log('snapshot', snapshot.val());
 		// });
 		empTable.ref('Employees').once('value').then((snapshot)=>{
-			console.log('snapshot', snapshot.val());
+			// console.log('snapshot', snapshot.val());
 			const data = [];
 			const empObj = snapshot.val();
 			for(let emp in empObj){
@@ -60,7 +60,7 @@ class TablePage extends Component{
 			let firstName = '';
 			let lastName = '';
 			if(nameFilter[0].includes(',')){
-				lastName = nameFilter[0];
+				lastName = nameFilter[0].replace(',','');
 				firstName = nameFilter[1];
 			}else{
 				lastName = nameFilter[1];
