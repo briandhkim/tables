@@ -1,6 +1,7 @@
 import React, {Component} from 'react';
 import firebase from './firebase/firebase';
 import {PageHeader, Table, FormControl, FormGroup, Button, Glyphicon, Modal, Label, Popover, OverlayTrigger} from 'react-bootstrap';
+import $ from 'jquery';
 import TableData from './tableData';
 import SearchModal from './searchModal';
 import './tablePage.css';
@@ -25,6 +26,7 @@ class TablePage extends Component{
 		this.empPhoneInput = this.empPhoneInput.bind(this);
 		this.empSuperInput = this.empSuperInput.bind(this);
 		this.clearInput = this.clearInput.bind(this);
+		this.downloadCSV = this.downloadCSV.bind(this);
 		this.showModal = this.showModal.bind(this);
 		this.closeModal = this.closeModal.bind(this);
 	}
@@ -45,6 +47,7 @@ class TablePage extends Component{
 		});
 	}
 	setEmpData(data){
+		console.log(data);
 		this.setState({
 			empData : data
 		});
@@ -113,6 +116,24 @@ class TablePage extends Component{
 			empSuper: ''
 		});
 	}
+	downloadCSV(){
+		const {empData} = this.state;
+		let csvContent = "data:text/csv;charset=utf-8,First Name,Last Name,ID,Phone,Supervisor\n";
+		empData.forEach((node)=>{
+			const empl = Object.values(Object.values(node)[0]);
+			// console.log(empl);
+			const phone = '('+empl[3].slice(0,3)+') '+empl[3].slice(3,6)+'-'+empl[3].slice(6);
+			csvContent += empl[0]+","+empl[2]+","+empl[1]+","+phone+","+empl[4]+"\n";
+		});
+		const encodeUri = encodeURI(csvContent);
+		let linkElmt = $('<a>',{
+			class: 'csvLink',
+			href: encodeUri,
+			download: "employee_data.csv"
+		}).appendTo('body');
+		$('.csvLink')[0].click();
+		$('.csvLink').remove();
+	}
 	showModal(){
 		this.setState({modalShow:true});
 	}
@@ -124,7 +145,11 @@ class TablePage extends Component{
 		const tableRows = empData ? empData.map((emp, idx)=>{
 			return <TableData key={idx} index={idx} employee={emp} refreshData={this.getAllData}/>
 		}):<tr></tr>;
-
+		const csvPopover = (
+			<Popover id="popover-trigger-hover-focus">
+				download as CSV
+			</Popover>
+		);
 		return(
 			<div className='container-fluid'>
 				<div className='page-header col-xs-12 col-sm-10 col-sm-offset-1'>
@@ -205,7 +230,11 @@ class TablePage extends Component{
 						<Button className='btn-info btn-block' onClick={this.showModal}>
 							Search
 						</Button>
-						
+						<OverlayTrigger trigger={['hover','focus']} placement="left" overlay={csvPopover}>
+							<Button className='label-default pull-right csvBtn' onClick={this.downloadCSV}>
+								<Glyphicon glyph='download-alt' />
+							</Button>
+						</OverlayTrigger>
 					</form>
 				</div>
 
