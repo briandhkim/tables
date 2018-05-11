@@ -1,7 +1,6 @@
 import React, {Component} from 'react';
 import firebase from './firebase/firebase';
 import {PageHeader, Table, FormControl, FormGroup, Button, Glyphicon, Modal, Label, Popover, OverlayTrigger} from 'react-bootstrap';
-import $ from 'jquery';
 import TableData from './tableData';
 import SearchModal from './searchModal';
 import './tablePage.css';
