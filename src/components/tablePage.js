@@ -3,6 +3,7 @@ import firebase from './firebase/firebase';
 import {PageHeader, Table, FormControl, FormGroup, Button, Glyphicon, Modal, Label, Popover, OverlayTrigger} from 'react-bootstrap';
 import $ from 'jquery';
 import TableData from './tableData';
+import SearchModal from './searchModal';
 import './tablePage.css';
 
 class TablePage extends Component{
@@ -18,6 +19,7 @@ class TablePage extends Component{
 			modalShow: false
 		}
 		this.getAllData = this.getAllData.bind(this);
+		this.setEmpData = this.setEmpData.bind(this);
 		this.handleEmployeeAdd = this.handleEmployeeAdd.bind(this);
 		this.empNameInput = this.empNameInput.bind(this);
 		this.empIdInput = this.empIdInput.bind(this);
@@ -33,9 +35,6 @@ class TablePage extends Component{
 	}
 	getAllData(){
 		const empTable = firebase.database();
-		// empTable.ref('Employees').on('value', (snapshot)=>{
-		// 	console.log('snapshot', snapshot.val());
-		// });
 		empTable.ref('Employees').orderByChild('id').once('value').then((snapshot)=>{
 			// console.log('snapshot', snapshot.val());
 			const data = [];
@@ -43,9 +42,12 @@ class TablePage extends Component{
 	            data.push({[child.key] : child.val()});
 	        });
 			
-			this.setState({
-				empData: data
-			});
+			this.setEmpData(data);
+		});
+	}
+	setEmpData(data){
+		this.setState({
+			empData : data
 		});
 	}
 	handleEmployeeAdd(e){
@@ -198,7 +200,7 @@ class TablePage extends Component{
 						<span className={`${addError ? 'show':'hidden'} text-danger`}>
 							Fill in all fields!
 						</span>
-						<Button className='btn-primary btn-block'>
+						<Button className='btn-primary btn-block' onClick={this.getAllData}>
 							Load All
 						</Button>
 						<Button className='btn-info btn-block' onClick={this.showModal}>
@@ -228,7 +230,7 @@ class TablePage extends Component{
 					<Modal.Header closeButton>
 						<Modal.Title>Search Employee</Modal.Title>
 						<Modal.Body>
-							
+							<SearchModal setData={this.setEmpData} closeModal={this.closeModal}/>
 						</Modal.Body>
 					</Modal.Header>
 
