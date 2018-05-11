@@ -146,7 +146,7 @@ class TablePage extends Component{
 					</h3>
 				</div>
 
-				<div className='form-horizontal col-sm-2 col-sm-push-9'>
+				<div className='form-horizontal col-sm-12 col-md-2 col-md-push-9 addForm'>
 					<h4><strong>Add Employee</strong></h4>
 					<form>
 						<FormGroup className='input-group'>
@@ -209,7 +209,7 @@ class TablePage extends Component{
 					</form>
 				</div>
 
-				<div className='col-sm-8 col-sm-pull-1 table-responsive'>
+				<div className='col-sm-12 col-md-8 col-md-pull-1 table-responsive'>
 					<Table striped bordered condensed hover>
 						<thead className='font-weight-bold'>
 							<tr className='warning'>
@@ -220,9 +220,11 @@ class TablePage extends Component{
 								<th className='text-center'>Delete</th>
 							</tr>
 						</thead>
+						
 						<tbody className='text-center'>
 							{tableRows}
 						</tbody>
+						
 					</Table>
 				</div>
 				<Modal show={this.state.modalShow} onHide={this.closeModal}>

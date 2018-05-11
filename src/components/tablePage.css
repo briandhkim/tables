@@ -2,7 +2,14 @@
 font-family: 'Inconsolata', monospace;
 font-family: 'IM Fell Double Pica', serif;
 */
-
+::-webkit-scrollbar{
+    width: 8px;
+    background-color: rgba(230,230,230, 0.8);
+}
+::-webkit-scrollbar-thumb{
+    width: 5px;
+    background-color: rgb(30,30,30);
+}
 .empAddBtn, .btn-block, .csvBtn{
 	margin-bottom: 15px;
 }
@@ -32,4 +39,22 @@ div.page-header, div.table-responsive, form .btn{
 div.table-responsive > table.table > tbody > tr >td{
 	font-size: 15px;
 	line-height: 2;
+}
+
+.tbodyWrap{
+	max-height: 600px;
+	overflow: auto;
+}
+
+@media only screen and (min-width: 992px){
+	div.form-horizontal.addForm{
+		padding-left: 20px;
+	}
+}
+
+@media only screen and (min-width: 767px){
+	.table-responsive{
+		max-height: 81vh;
+		overflow: auto;
+	}
 }
