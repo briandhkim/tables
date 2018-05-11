@@ -36,13 +36,13 @@ class TablePage extends Component{
 		// empTable.ref('Employees').on('value', (snapshot)=>{
 		// 	console.log('snapshot', snapshot.val());
 		// });
-		empTable.ref('Employees').once('value').then((snapshot)=>{
+		empTable.ref('Employees').orderByChild('id').once('value').then((snapshot)=>{
 			// console.log('snapshot', snapshot.val());
 			const data = [];
-			const empObj = snapshot.val();
-			for(let emp in empObj){
-				data.push({[emp] : empObj[emp]});
-			}
+			snapshot.forEach((child) => {
+	            data.push({[child.key] : child.val()});
+	        });
+			
 			this.setState({
 				empData: data
 			});
@@ -131,7 +131,7 @@ class TablePage extends Component{
 						<strong>Employee Table</strong>
 						<small>
 							<Label>
-								Paddy's Pub
+								Pied Piper
 							</Label>
 						</small>
 					</h1>
@@ -139,7 +139,7 @@ class TablePage extends Component{
 						<strong>Employee Table</strong>
 						<small>
 							<Label>
-								Paddy's Pub
+								Pied Piper
 							</Label>	
 						</small>
 					</h3>
