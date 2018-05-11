@@ -53,7 +53,7 @@ class SearchModal extends Component{
 		const {empId} = this.state;
 		const empTable = firebase.database();
 		empTable.ref('Employees')
-			.orderByChild('id').equalTo(empId)
+			.orderByChild('id').equalTo(empId.trim())
 			.once('value').then((snapshot)=>{
 				// console.log(snapshot.val());
 				const data = [];
@@ -68,7 +68,7 @@ class SearchModal extends Component{
 		const firstNCap = firstName[0].toUpperCase() + firstName.slice(1,);
 		const empTable = firebase.database();
 		empTable.ref('Employees')
-			.orderByChild('first_name').equalTo(firstNCap)
+			.orderByChild('first_name').equalTo(firstNCap.trim())
 			.once('value').then((snapshot)=>{
 				// console.log(snapshot.val());
 				const data = [];
@@ -83,7 +83,7 @@ class SearchModal extends Component{
 		const lastNCap = lastName[0].toUpperCase() + lastName.slice(1,);
 		const empTable = firebase.database();
 		empTable.ref('Employees')
-			.orderByChild('last_name').equalTo(lastNCap)
+			.orderByChild('last_name').equalTo(lastNCap.trim())
 			.once('value').then((snapshot)=>{
 				// console.log(snapshot.val());
 				const data = [];
