@@ -1,6 +1,7 @@
 import React, {Component} from 'react';
 // import firebase from './firebase/firebase';
 import axios from 'axios';
+import qs from 'qs';
 import {PageHeader, Table, FormControl, FormGroup, Button, Glyphicon, Modal, Label, Popover, OverlayTrigger} from 'react-bootstrap';
 import $ from 'jquery';
 import TableData from './tableData';
@@ -13,7 +14,6 @@ class TablePage extends Component{
 		this.state={
 			empData: null,
 			empName: '',
-			empId: '',
 			empPhone: '',
 			empSuper: '',
 			addError: false,
@@ -23,7 +23,6 @@ class TablePage extends Component{
 		this.setEmpData = this.setEmpData.bind(this);
 		this.handleEmployeeAdd = this.handleEmployeeAdd.bind(this);
 		this.empNameInput = this.empNameInput.bind(this);
-		this.empIdInput = this.empIdInput.bind(this);
 		this.empPhoneInput = this.empPhoneInput.bind(this);
 		this.empSuperInput = this.empSuperInput.bind(this);
 		this.clearInput = this.clearInput.bind(this);
@@ -63,8 +62,8 @@ class TablePage extends Component{
 	}
 	handleEmployeeAdd(e){
 		e.preventDefault();
-		const {empName, empId, empPhone, empSuper} = this.state;
-		if(!empName.length||!empId.length||!empPhone.length||!empSuper.length){
+		const {empName, empPhone, empSuper} = this.state;
+		if(!empName.length||!empPhone.length||!empSuper.length){
 			this.setState({addError: true});
 			return;
 		}else{
@@ -72,6 +71,7 @@ class TablePage extends Component{
 			const nameFilter = empName.split(' ');
 			let firstName = '';
 			let lastName = '';
+			//name filter to first and last
 			if(nameFilter[0].includes(',')){
 				lastName = nameFilter[0].replace(',','');
 				firstName = nameFilter[1];
@@ -79,29 +79,35 @@ class TablePage extends Component{
 				lastName = nameFilter[1];
 				firstName = nameFilter[0];
 			}
-			const sendData = {
-				first_name	: firstName,
-				last_name 	: lastName,
-				id 			: empId,
-				phone 		: phoneFiltered,
-				supervisor 	: empSuper
+
+			const url = 'https://piedpiper.briandhkim.fun/table/access.php';
+			const data = {
+				action			: 'add_employee',
+				first_name		: firstName,
+				last_name 		: lastName,
+				phone_number 	: phoneFiltered,
+				supervisor 		: empSuper
 			};
-			const empTable = firebase.database();
-			empTable.ref('Employees').push(sendData).then(()=>{
-				this.clearInput();
-				this.getAllData();
+			axios.post(url,
+				qs.stringify(data)
+			)
+			.then((res)=>{
+				const response = res.data;
+				if(response.success){
+					console.log(response.messages);
+					this.clearInput();
+					this.getAllData();
+				}
+			})
+			.catch((err)=>{
+				console.log(err);
 			});
+			
 		}
 	}
 	empNameInput(e){
 		this.setState({
 			empName: e.target.value,
-			addError: false
-		});
-	}
-	empIdInput(e){
-		this.setState({
-			empId: e.target.value,
 			addError: false
 		});
 	}
@@ -192,17 +198,6 @@ class TablePage extends Component{
 								value={this.state.empName}
 								placeholder="Employee Name"
 								onChange={this.empNameInput}
-							/>
-						</FormGroup>
-						<FormGroup className='input-group'>
-							<span className='input-group-addon'>
-								<Glyphicon glyph="info-sign"/>
-							</span>
-							<FormControl 
-								type='text'
-								value={this.state.empId}
-								placeholder="Employee ID"
-								onChange={this.empIdInput}
 							/>
 						</FormGroup>
 						<FormGroup className='input-group'>

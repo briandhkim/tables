@@ -30,7 +30,11 @@ const TableData = (props) =>{
 			data: qs.stringify(data)
 		})
 		.then((res)=>{
-			console.log(res);
+			const response = res.data;
+			if(response.success){
+				refreshData();
+				console.log(response.messages);
+			}
 		}).catch((err)=>{
 			console.log(err);
 		});;
