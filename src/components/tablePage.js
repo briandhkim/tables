@@ -1,5 +1,6 @@
 import React, {Component} from 'react';
-import firebase from './firebase/firebase';
+// import firebase from './firebase/firebase';
+import axios from 'axios';
 import {PageHeader, Table, FormControl, FormGroup, Button, Glyphicon, Modal, Label, Popover, OverlayTrigger} from 'react-bootstrap';
 import $ from 'jquery';
 import TableData from './tableData';
@@ -35,19 +36,27 @@ class TablePage extends Component{
 		this.getAllData();
 	}
 	getAllData(){
-		const empTable = firebase.database();
-		empTable.ref('Employees').orderByChild('id').once('value').then((snapshot)=>{
-			// console.log('snapshot', snapshot.val());
-			const data = [];
-			snapshot.forEach((child) => {
-	            data.push({[child.key] : child.val()});
-	        });
-			
-			this.setEmpData(data);
-		});
+		const action = 'get_all_data';
+		const url = 'https://piedpiper.briandhkim.fun/table/access.php?action=';
+		axios({
+			url: `${url}${action}`,
+			method: 'GET'
+		})
+		.then((res)=>{
+			// console.log(res.data);
+			const response = res.data;
+			if(response.success){
+				this.setEmpData(response.data);
+			}else{
+				console.log(response.errors);
+			}
+		})
+		.catch((err)=>{
+			console.log(err);
+		})
 	}
 	setEmpData(data){
-		console.log(data);
+		// console.log(data);
 		this.setState({
 			empData : data
 		});
