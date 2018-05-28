@@ -17,7 +17,9 @@ class TablePage extends Component{
 			empPhone: '',
 			empSuper: '',
 			addError: false,
-			modalShow: false
+			modalShow: false,
+			addProgress: false,
+			loadAllProgress: true
 		}
 		this.getAllData = this.getAllData.bind(this);
 		this.setEmpData = this.setEmpData.bind(this);
@@ -57,7 +59,8 @@ class TablePage extends Component{
 	setEmpData(data){
 		// console.log(data);
 		this.setState({
-			empData : data
+			empData : data,
+			loadAllProgress: false
 		});
 	}
 	handleEmployeeAdd(e){
@@ -88,6 +91,7 @@ class TablePage extends Component{
 				phone_number 	: phoneFiltered,
 				supervisor 		: empSuper
 			};
+			this.setState({addProgress: true});
 			axios.post(url,
 				qs.stringify(data)
 			)
@@ -128,7 +132,8 @@ class TablePage extends Component{
 			empName: '',
 			empId: '',
 			empPhone: '',
-			empSuper: ''
+			empSuper: '',
+			addProgress: false
 		});
 	}
 	downloadCSV(){
@@ -148,12 +153,6 @@ class TablePage extends Component{
 			return encodeURI(csvContent);
 		}
 
-		// empData.forEach((node)=>{
-		// 	const empl = Object.values(Object.values(node)[0]);
-		// 	const phone = '('+empl[3].slice(0,3)+') '+empl[3].slice(3,6)+'-'+empl[3].slice(6);
-		// 	csvContent += empl[0]+","+empl[2]+","+empl[1]+","+phone+","+empl[4]+"\n";
-		// });
-		// const encodeUri = encodeURI(csvContent);
 		const encoded = csvOutput(empData);
 
 		let linkElmt = $('<a>',{
@@ -171,7 +170,7 @@ class TablePage extends Component{
 		this.setState({modalShow:false});
 	}
 	render(){
-		const {empData, addError} = this.state;
+		const {empData, addError, addProgress, loadAllProgress} = this.state;
 		const tableRows = empData ? empData.map((emp, idx)=>{
 			return <TableData key={idx} index={idx} employee={emp} refreshData={this.getAllData}/>
 		}):<tr></tr>;
@@ -188,6 +187,7 @@ class TablePage extends Component{
 						<small>
 							<Label>
 								Pied Piper
+								<i className="fa fa-pied-piper-alt fa-lg" aria-hidden="true"></i>
 							</Label>
 						</small>
 					</h1>
@@ -196,6 +196,7 @@ class TablePage extends Component{
 						<small>
 							<Label>
 								Pied Piper
+								<i className="fa fa-pied-piper-alt fa-lg" aria-hidden="true"></i>
 							</Label>	
 						</small>
 					</h3>
@@ -238,13 +239,23 @@ class TablePage extends Component{
 							/>
 						</FormGroup>
 						<Button className='btn-success btn-block empAddBtn' onClick={this.handleEmployeeAdd}>
-							Add 
+							<span className={`${addProgress ? 'show' : 'hidden'}`}>
+								Adding... <i className="fa fa-spinner fa-pulse fa-lg fa-fw"></i>
+							</span>
+							<span className={`${addProgress ? 'hidden' : 'show'}`}>
+								Add
+							</span>
 						</Button>
 						<span className={`${addError ? 'show':'hidden'} text-danger`}>
 							Fill in all fields!
 						</span>
 						<Button className='btn-primary btn-block' onClick={this.getAllData}>
-							Load All
+							<span className={`${loadAllProgress ? 'show' : 'hidden'}`}>
+								Loading... <i className="fa fa-spinner fa-pulse fa-lg fa-fw"></i>
+							</span>
+							<span className={`${loadAllProgress ? 'hidden' : 'show'}`}>
+								Load All
+							</span>
 						</Button>
 						<Button className='btn-info btn-block' onClick={this.showModal}>
 							Search
