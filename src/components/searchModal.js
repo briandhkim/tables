@@ -10,7 +10,8 @@ class SearchModal extends Component{
 			firstName: '',
 			lastName: '',
 			empId: '',
-			noResult: false
+			noResult: false,
+			searchProgress: false
 		}
 		this.firstNameInput = this.firstNameInput.bind(this);
 		this.lastNameInput = this.lastNameInput.bind(this);
@@ -40,6 +41,7 @@ class SearchModal extends Component{
 		});
 	}
 	searchPerson(){
+		this.setState({searchProgress: true});
 		const {firstName, lastName, empId} = this.state;
 		if(empId.length){
 			this.searchById();
@@ -67,6 +69,7 @@ class SearchModal extends Component{
 		})
 		.catch((err)=>{
 			console.log(err);
+			this.displayNoResult();
 		});
 
 	}
@@ -90,42 +93,13 @@ class SearchModal extends Component{
 		})
 		.catch((err)=>{
 			console.log(err);
+			this.displayNoResult();
 		});
-	}
-	searchByFirstName(){
-		const {firstName} = this.state;
-		const firstNCap = firstName[0].toUpperCase() + firstName.slice(1,);
-		const empTable = firebase.database();
-		empTable.ref('Employees')
-			.orderByChild('first_name').equalTo(firstNCap.trim())
-			.once('value').then((snapshot)=>{
-				// console.log(snapshot.val());
-				const data = [];
-				snapshot.forEach((child) => {
-		            data.push({[child.key] : child.val()});
-		        });
-		        this.displayResults(data);
-			});
-	}
-	searchByLastName(){
-		const {lastName} = this.state;
-		const lastNCap = lastName[0].toUpperCase() + lastName.slice(1,);
-		const empTable = firebase.database();
-		empTable.ref('Employees')
-			.orderByChild('last_name').equalTo(lastNCap.trim())
-			.once('value').then((snapshot)=>{
-				// console.log(snapshot.val());
-				const data = [];
-				snapshot.forEach((child) => {
-		            data.push({[child.key] : child.val()});
-		        });
-		        this.displayResults(data);
-			});
-		
 	}
 	displayResults(data){
 		const {setData, closeModal} = this.props;
 		if(data.length){
+			this.setState({searchProgress: false});
 			setData(data);
 		}else{
 			this.displayNoResult();
@@ -138,12 +112,13 @@ class SearchModal extends Component{
 			firstName: '',
 			lastName: '',
 			empId: '',
-			noResult: true
+			noResult: true,
+			searchProgress: false
 		});
 	}
 
 	render(){
-		const {noResult} = this.state;
+		const {noResult, searchProgress} = this.state;
 		return(
 			<div className='form-horizontal'>
 				<form>
@@ -182,7 +157,12 @@ class SearchModal extends Component{
 					</FormGroup>
 
 					<Button className='btn-block btn-info' onClick={this.searchPerson}>
-						Search
+						<span className={`${searchProgress ? 'show' : 'hidden'}`}>
+							Searching... <i className="fa fa-spinner fa-pulse fa-lg fa-fw"></i>
+						</span>
+						<span className={`${searchProgress ? 'hidden' : 'show'}`}>
+							Search
+						</span>
 					</Button>
 					<span className={`text-danger ${noResult ? 'show' : 'hidden'}`}>
 						<h4>No results found</h4>
