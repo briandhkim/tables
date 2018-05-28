@@ -7,6 +7,7 @@ import $ from 'jquery';
 import TableData from './tableData';
 import SearchModal from './searchModal';
 import './tablePage.css';
+import FormAndButtons from './formAndButtons';
 
 import { connect } from 'react-redux';
 import { getAllData } from '../actions/index';
@@ -208,71 +209,7 @@ class TablePage extends Component{
 					</h3>
 				</div>
 
-				<div className='form-horizontal col-sm-12 col-md-2 col-md-push-9 addForm'>
-					<h4><strong>Add Employee</strong></h4>
-					<form>
-						<FormGroup className='input-group'>
-							<span className='input-group-addon'>
-								<Glyphicon glyph="user"/>
-							</span>
-							<FormControl 
-								type='text'
-								value={this.state.empName}
-								placeholder="Employee Name"
-								onChange={this.empNameInput}
-							/>
-						</FormGroup>
-						<FormGroup className='input-group'>
-							<span className='input-group-addon'>
-								<Glyphicon glyph="earphone"/>
-							</span>
-							<FormControl 
-								type='text'
-								value={this.state.empPhone}
-								placeholder="Employee Phone"
-								onChange={this.empPhoneInput}
-							/>
-						</FormGroup>
-						<FormGroup className='input-group'>
-							<span className='input-group-addon'>
-								<Glyphicon glyph="king"/>
-							</span>
-							<FormControl 
-								type='text'
-								value={this.state.empSuper}
-								placeholder="Supervisor"
-								onChange={this.empSuperInput}
-							/>
-						</FormGroup>
-						<Button className='btn-success btn-block empAddBtn' onClick={this.handleEmployeeAdd}>
-							<span className={`${addProgress ? 'show' : 'hidden'}`}>
-								Adding... <i className="fa fa-spinner fa-pulse fa-lg fa-fw"></i>
-							</span>
-							<span className={`${addProgress ? 'hidden' : 'show'}`}>
-								Add
-							</span>
-						</Button>
-						<span className={`${addError ? 'show':'hidden'} text-danger`}>
-							Fill in all fields!
-						</span>
-						<Button className='btn-primary btn-block' onClick={this.getAllData}>
-							<span className={`${loadAllProgress ? 'show' : 'hidden'}`}>
-								Loading... <i className="fa fa-spinner fa-pulse fa-lg fa-fw"></i>
-							</span>
-							<span className={`${loadAllProgress ? 'hidden' : 'show'}`}>
-								Load All
-							</span>
-						</Button>
-						<Button className='btn-info btn-block' onClick={this.showModal}>
-							Search
-						</Button>
-						<OverlayTrigger trigger={['hover','focus']} placement="left" overlay={csvPopover}>
-							<Button className='label-default pull-right csvBtn' onClick={this.downloadCSV}>
-								<Glyphicon glyph='download-alt' />
-							</Button>
-						</OverlayTrigger>
-					</form>
-				</div>
+				<FormAndButtons />
 
 				<div className='col-sm-12 col-md-8 col-md-pull-1 table-responsive'>
 					<Table striped bordered condensed hover>
