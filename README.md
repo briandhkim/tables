@@ -1,11 +1,11 @@
 # CMS for managing employee data
 
 - ### Front End
- ...- React
+ ... - React
  ...- Axios
  
 
 - ### Back End
-  ...- PHP
-  ...- MySQL
+  ... - PHP
+  ... - MySQL
   
