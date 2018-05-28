@@ -6,6 +6,12 @@
  
 
 - ### Back End
-  ... - PHP
-  ... - MySQL
+  * PHP
+  * MySQL
+
+------------
+
+### Features
+  - Search people by name or id
+  - Download the list as CSV file
   
