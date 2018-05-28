@@ -57,6 +57,7 @@ div.table-responsive > table.table > tbody > tr >td{
 
 @media only screen and (min-width: 767px){
 	.table-responsive{
+		min-height: 500px;
 		max-height: 81vh;
 		overflow: auto;
 	}
