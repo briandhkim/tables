@@ -1,4 +1,4 @@
-# CMS for managing employee data [Link](https://employee.briandhkim.fun)
+# CMS for managing employee data - [Link](https://employee.briandhkim.fun)
 
 - ### Front End
   * React
