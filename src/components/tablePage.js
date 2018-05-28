@@ -133,17 +133,32 @@ class TablePage extends Component{
 	}
 	downloadCSV(){
 		const {empData} = this.state;
-		let csvContent = "data:text/csv;charset=utf-8,First Name,Last Name,ID,Phone,Supervisor\n";
-		empData.forEach((node)=>{
-			const empl = Object.values(Object.values(node)[0]);
-			// console.log(empl);
-			const phone = '('+empl[3].slice(0,3)+') '+empl[3].slice(3,6)+'-'+empl[3].slice(6);
-			csvContent += empl[0]+","+empl[2]+","+empl[1]+","+phone+","+empl[4]+"\n";
-		});
-		const encodeUri = encodeURI(csvContent);
+
+		function csvOutput(data){
+			let csvContent = "data:text/csv;charset=utf-8,First Name,Last Name,ID,Phone,Supervisor\n";
+
+			data.map((employee, idx)=>{
+				let {employee_id, first_name, last_name, phone_number, supervisor } = employee;
+				first_name = first_name[0].toUpperCase() + first_name.slice(1,);
+				last_name = last_name[0].toUpperCase() + last_name.slice(1,);
+				phone_number = '('+phone_number.slice(0,3)+') '+phone_number.slice(3,6)+'-'+phone_number.slice(6);
+				
+				csvContent += `${first_name}, ${last_name}, ${employee_id}, ${phone_number}, ${supervisor} \n`;
+			});
+			return encodeURI(csvContent);
+		}
+
+		// empData.forEach((node)=>{
+		// 	const empl = Object.values(Object.values(node)[0]);
+		// 	const phone = '('+empl[3].slice(0,3)+') '+empl[3].slice(3,6)+'-'+empl[3].slice(6);
+		// 	csvContent += empl[0]+","+empl[2]+","+empl[1]+","+phone+","+empl[4]+"\n";
+		// });
+		// const encodeUri = encodeURI(csvContent);
+		const encoded = csvOutput(empData);
+
 		let linkElmt = $('<a>',{
 			class: 'csvLink',
-			href: encodeUri,
+			href: encoded,
 			download: "employee_data.csv"
 		}).appendTo('body');
 		$('.csvLink')[0].click();
