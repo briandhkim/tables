@@ -8,6 +8,9 @@ import TableData from './tableData';
 import SearchModal from './searchModal';
 import './tablePage.css';
 
+import { connect } from 'react-redux';
+import { getAllData } from '../actions/index';
+
 class TablePage extends Component{
 	constructor(props){
 		super(props);
@@ -34,7 +37,9 @@ class TablePage extends Component{
 	}
 
 	componentDidMount(){
-		this.getAllData();
+		// this.getAllData();
+		this.props.getAllData();
+		console.log(this.props);
 	}
 	getAllData(){
 		const action = 'get_all_data';
@@ -300,4 +305,11 @@ class TablePage extends Component{
 	}
 }
 
-export default TablePage;
+function mapStateToProps(state){
+	return {
+		employeeData: state.table.employeeData
+	}
+}
+
+// export default TablePage;
+export default connect(mapStateToProps, {getAllData})(TablePage);
