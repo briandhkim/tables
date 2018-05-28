@@ -1,6 +1,7 @@
 import React, {Component} from 'react';
+import axios from 'axios';
+import qs from 'qs';
 import {FormGroup, Glyphicon, FormControl, Button} from 'react-bootstrap';
-import firebase from './firebase/firebase';
 
 class SearchModal extends Component{
 	constructor(props){
@@ -16,8 +17,7 @@ class SearchModal extends Component{
 		this.idInput = this.idInput.bind(this);
 		this.searchPerson = this.searchPerson.bind(this);
 		this.searchById = this.searchById.bind(this);
-		this.searchByFirstName = this.searchByFirstName.bind(this);
-		this.searchByLastName = this.searchByLastName.bind(this);
+		this.searchByName = this.searchByName.bind(this);
 		this.displayResults = this.displayResults.bind(this);
 		this.displayNoResult = this.displayNoResult.bind(this);
 	}
@@ -41,27 +41,56 @@ class SearchModal extends Component{
 	}
 	searchPerson(){
 		const {firstName, lastName, empId} = this.state;
-		if(firstName.length){
-			this.searchByFirstName();
-		}else if(lastName.length){
-			this.searchByLastName();
-		}else if(empId.length){
+		if(empId.length){
 			this.searchById();
+		}else if(firstName.length || lastName.length){
+			this.searchByName();
 		}
 	}
 	searchById(){
 		const {empId} = this.state;
-		const empTable = firebase.database();
-		empTable.ref('Employees')
-			.orderByChild('id').equalTo(empId.trim())
-			.once('value').then((snapshot)=>{
-				// console.log(snapshot.val());
-				const data = [];
-				snapshot.forEach((child) => {
-		            data.push({[child.key] : child.val()});
-		        });
-		        this.displayResults(data);
-			});
+		const url = 'https://piedpiper.briandhkim.fun/table/access.php?action=';
+		const action = 'search_by_id';
+
+		axios({
+			url: `${url}${action}&employee_id=${empId}`,
+			method: 'GET'
+		})
+		.then((res)=>{
+			const response = res.data;
+			console.log(response);
+			if(response.success){
+				this.displayResults(response.data);
+			}else{
+				this.displayNoResult();
+			}
+		})
+		.catch((err)=>{
+			console.log(err);
+		});
+
+	}
+	searchByName(){
+		const {firstName, lastName} = this.state;
+		const url = 'https://piedpiper.briandhkim.fun/table/access.php?action=';
+		const action = 'search_by_name';
+
+		axios({
+			url: `${url}${action}&first_name=${firstName}&last_name=${lastName}`,
+			method: 'GET'
+		})
+		.then((res)=>{
+			const response = res.data;
+			console.log(response);
+			if(response.success){
+				this.displayResults(response.data);
+			}else{
+				this.displayNoResult();
+			}
+		})
+		.catch((err)=>{
+			console.log(err);
+		});
 	}
 	searchByFirstName(){
 		const {firstName} = this.state;
