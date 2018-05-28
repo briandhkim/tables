@@ -39,7 +39,6 @@ class TablePage extends Component{
 	componentDidMount(){
 		// this.getAllData();
 		this.props.getAllData();
-		console.log(this.props);
 	}
 	getAllData(){
 		const action = 'get_all_data';
@@ -175,6 +174,8 @@ class TablePage extends Component{
 		this.setState({modalShow:false});
 	}
 	render(){
+		const{employeeData} = this.props;
+		console.log('employee data at tablePage render', employeeData);
 		const {empData, addError, addProgress, loadAllProgress} = this.state;
 		const tableRows = empData ? empData.map((emp, idx)=>{
 			return <TableData key={idx} index={idx} employee={emp} refreshData={this.getAllData}/>
