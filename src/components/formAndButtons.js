@@ -106,7 +106,7 @@ class FormAndButtons extends Component{
 							Adding... <i className="fa fa-spinner fa-pulse fa-lg fa-fw"></i>
 						</span>
 						<span className={`${addInProgress ? 'hidden' : 'show'}`}>
-							Add <i class="fa fa-pied-piper" aria-hidden="true"></i>
+							Add <i className="fa fa-pied-piper" aria-hidden="true"></i>
 						</span>
 					</Button>
 					<Button className='btn-primary btn-block' onClick={getAllData}>
