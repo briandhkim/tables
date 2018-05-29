@@ -1,7 +1,4 @@
 import React, {Component} from 'react';
-// import firebase from './firebase/firebase';
-import axios from 'axios';
-import qs from 'qs';
 import {PageHeader, Table, FormControl, FormGroup, Button, Glyphicon, Modal, Label} from 'react-bootstrap';
 import $ from 'jquery';
 import TableData from './tableData';
@@ -10,7 +7,7 @@ import './tablePage.css';
 import FormAndButtons from './formAndButtons';
 
 import { connect } from 'react-redux';
-import { getAllData } from '../actions/index';
+import { getAllData, openModal, hideModal } from '../actions/index';
 
 class TablePage extends Component{
 	constructor(props){
@@ -25,12 +22,6 @@ class TablePage extends Component{
 			addProgress: false,
 			loadAllProgress: true
 		}
-		this.handleEmployeeAdd = this.handleEmployeeAdd.bind(this);
-		this.empNameInput = this.empNameInput.bind(this);
-		this.empPhoneInput = this.empPhoneInput.bind(this);
-		this.empSuperInput = this.empSuperInput.bind(this);
-		this.clearInput = this.clearInput.bind(this);
-		this.downloadCSV = this.downloadCSV.bind(this);
 		this.showModal = this.showModal.bind(this);
 		this.closeModal = this.closeModal.bind(this);
 	}
@@ -40,106 +31,7 @@ class TablePage extends Component{
 		this.props.getAllData();
 	}
 	
-	handleEmployeeAdd(e){
-		e.preventDefault();
-		const {empName, empPhone, empSuper} = this.state;
-		if(!empName.length||!empPhone.length||!empSuper.length){
-			this.setState({addError: true});
-			return;
-		}else{
-			const phoneFiltered = empPhone.replace(/\D+/g,'');
-			const nameFilter = empName.split(' ');
-			let firstName = '';
-			let lastName = '';
-			//name filter to first and last
-			if(nameFilter[0].includes(',')){
-				lastName = nameFilter[0].replace(',','');
-				firstName = nameFilter[1];
-			}else{
-				lastName = nameFilter[1];
-				firstName = nameFilter[0];
-			}
-
-			const url = 'https://piedpiper.briandhkim.fun/table/access.php';
-			const data = {
-				action			: 'add_employee',
-				first_name		: firstName,
-				last_name 		: lastName,
-				phone_number 	: phoneFiltered,
-				supervisor 		: empSuper
-			};
-			this.setState({addProgress: true});
-			axios.post(url,
-				qs.stringify(data)
-			)
-			.then((res)=>{
-				const response = res.data;
-				if(response.success){
-					console.log(response.messages);
-					this.clearInput();
-					this.getAllData();
-				}
-			})
-			.catch((err)=>{
-				console.log(err);
-			});
-			
-		}
-	}
-	empNameInput(e){
-		this.setState({
-			empName: e.target.value,
-			addError: false
-		});
-	}
-	empPhoneInput(e){
-		this.setState({
-			empPhone: e.target.value,
-			addError: false
-		});
-	}
-	empSuperInput(e){
-		this.setState({
-			empSuper: e.target.value,
-			addError: false
-		});
-	}
-	clearInput(){
-		this.setState({
-			empName: '',
-			empId: '',
-			empPhone: '',
-			empSuper: '',
-			addProgress: false
-		});
-	}
-	downloadCSV(){
-		const {empData} = this.state;
-
-		function csvOutput(data){
-			let csvContent = "data:text/csv;charset=utf-8,First Name,Last Name,ID,Phone,Supervisor\n";
-
-			data.map((employee, idx)=>{
-				let {employee_id, first_name, last_name, phone_number, supervisor } = employee;
-				first_name = first_name[0].toUpperCase() + first_name.slice(1,);
-				last_name = last_name[0].toUpperCase() + last_name.slice(1,);
-				phone_number = '('+phone_number.slice(0,3)+') '+phone_number.slice(3,6)+'-'+phone_number.slice(6);
-				
-				csvContent += `${first_name}, ${last_name}, ${employee_id}, ${phone_number}, ${supervisor} \n`;
-			});
-			return encodeURI(csvContent);
-		}
-
-		const encoded = csvOutput(empData);
-
-		let linkElmt = $('<a>',{
-			class: 'csvLink',
-			href: encoded,
-			download: "employee_data.csv"
-		}).appendTo('body');
-		$('.csvLink')[0].click();
-		$('.csvLink').remove();
-	}
+	
 	showModal(){
 		this.setState({modalShow:true});
 	}
@@ -147,14 +39,11 @@ class TablePage extends Component{
 		this.setState({modalShow:false});
 	}
 	render(){
-		const{employeeData} = this.props;
-		console.log('props at tablePage.js', this.props);
-		let tableRows;
-		if(employeeData && employeeData.success){
-			tableRows = employeeData.data ? employeeData.data.map((emp, idx)=>{
-				return <TableData key={idx} index={idx} employee={emp} refreshData={this.getAllData}/>
-			}):<tr></tr>;
-		}
+		const{employeeData, hideModal, showModal} = this.props;
+		const tableRows = employeeData ? employeeData.map((emp, idx)=>{
+			return <TableData key={idx} index={idx} employee={emp} refreshData={this.getAllData}/>
+		}):<tr></tr>;
+
 	
 
 		const {empData, addError, addProgress, loadAllProgress} = this.state;
@@ -202,11 +91,11 @@ class TablePage extends Component{
 						
 					</Table>
 				</div>
-				<Modal show={this.state.modalShow} onHide={this.closeModal}>
+				<Modal show={showModal} onHide={hideModal}>
 					<Modal.Header closeButton>
 						<Modal.Title>Search Employee</Modal.Title>
 						<Modal.Body>
-							<SearchModal setData={this.setEmpData} closeModal={this.closeModal}/>
+							<SearchModal />
 						</Modal.Body>
 					</Modal.Header>
 
@@ -218,9 +107,11 @@ class TablePage extends Component{
 
 function mapStateToProps(state){
 	return {
-		employeeData: state.table.employeeData
+		employeeData: state.table.employeeData,
+		retrievingInProgress: state.table.retrievingInProgress,
+		showModal : state.table.showModal
 	}
 }
 
 // export default TablePage;
-export default connect(mapStateToProps, {getAllData})(TablePage);
+export default connect(mapStateToProps, {getAllData, openModal, hideModal})(TablePage);

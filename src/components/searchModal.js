@@ -1,6 +1,9 @@
 import React, {Component} from 'react';
-import axios from 'axios';
-import qs from 'qs';
+import {Field, reduxForm} from 'redux-form';
+import {connect} from 'react-redux';
+import {hideModal} from '../actions';
+// import axios from 'axios';
+// import qs from 'qs';
 import {FormGroup, Glyphicon, FormControl, Button} from 'react-bootstrap';
 
 class SearchModal extends Component{
@@ -16,7 +19,6 @@ class SearchModal extends Component{
 		this.firstNameInput = this.firstNameInput.bind(this);
 		this.lastNameInput = this.lastNameInput.bind(this);
 		this.idInput = this.idInput.bind(this);
-		this.searchPerson = this.searchPerson.bind(this);
 		this.searchById = this.searchById.bind(this);
 		this.searchByName = this.searchByName.bind(this);
 		this.displayResults = this.displayResults.bind(this);
@@ -40,14 +42,15 @@ class SearchModal extends Component{
 			noResult : false
 		});
 	}
-	searchPerson(){
-		this.setState({searchProgress: true});
-		const {firstName, lastName, empId} = this.state;
-		if(empId.length){
-			this.searchById();
-		}else if(firstName.length || lastName.length){
-			this.searchByName();
-		}
+	searchEmployee(values){
+		console.log(values);
+		// this.setState({searchProgress: true});
+		// const {firstName, lastName, empId} = this.state;
+		// if(empId.length){
+		// 	this.searchById();
+		// }else if(firstName.length || lastName.length){
+		// 	this.searchByName();
+		// }
 	}
 	searchById(){
 		const {empId} = this.state;
@@ -117,46 +120,40 @@ class SearchModal extends Component{
 		});
 	}
 
+	renderInput( {input, label, type, placeholder} ){
+		let glyphClass = '';
+		if(label==='Name'){
+			glyphClass = 'user';
+		}else if(label==='Phone Number'){
+			glyphClass = 'earphone';
+		}else if(label==='Supervisor'){
+			glyphClass = 'king';
+		}
+		return(
+			<div>
+				<div className='input-group form-group'>
+					<span className='input-group-addon'>
+						<Glyphicon glyph='pencil' />
+					</span>
+					<input {...input} type={type} placeholder={placeholder} className='form-control' />
+					
+				</div>
+			</div>
+		)
+	}
+
 	render(){
 		const {noResult, searchProgress} = this.state;
+		const {handleSubmit, hideModal } = this.props;
 		return(
 			<div className='form-horizontal'>
-				<form>
-					<FormGroup className='input-group'>
-						<span className='input-group-addon'>
-							<Glyphicon glyph="pencil"/>
-						</span>
-						<FormControl 
-							type='text'
-							value={this.state.firstName}
-							placeholder="Search by first name"
-							onChange={this.firstNameInput}
-						/>
-					</FormGroup>
-					<FormGroup className='input-group'>
-						<span className='input-group-addon'>
-							<Glyphicon glyph="pencil"/>
-						</span>
-						<FormControl 
-							type='text'
-							value={this.state.lastName}
-							placeholder="Search by last name"
-							onChange={this.lastNameInput}
-						/>
-					</FormGroup>
-					<FormGroup className='input-group'>
-						<span className='input-group-addon'>
-							<Glyphicon glyph="pencil"/>
-						</span>
-						<FormControl 
-							type='text'
-							value={this.state.empId}
-							placeholder="Search by employee ID"
-							onChange={this.idInput}
-						/>
-					</FormGroup>
+				<form onSubmit={ handleSubmit( (val)=>{this.searchEmployee(val)} ) }>
+					<Field name='first name' component={this.renderInput} type='text' placeholder='Search by first name' label='First Name' />
+					<Field name='last name' component={this.renderInput} type='text' placeholder='Search by last name' label='Last Name' />
+					<Field name='employeeID' component={this.renderInput} type='text' placeholder='Search by employee ID' label='ID' />
+					
 
-					<Button className='btn-block btn-info' onClick={this.searchPerson}>
+					<Button className='btn-block btn-info' onClick={ handleSubmit( (val)=>{this.searchEmployee(val)} ) }>
 						<span className={`${searchProgress ? 'show' : 'hidden'}`}>
 							Searching... <i className="fa fa-spinner fa-pulse fa-lg fa-fw"></i>
 						</span>
@@ -173,4 +170,14 @@ class SearchModal extends Component{
 	}
 }
 
-export default SearchModal;
+function mapStateToProps(state){
+	const table = state.table;
+	return{}
+}
+
+SearchModal = reduxForm({
+	form : 'search-employee'
+})(SearchModal);
+
+// export default SearchModal;
+export default connect(mapStateToProps, {hideModal} )(SearchModal); 

@@ -8,20 +8,23 @@ const DEFAULT_STATE = {
 	addInProgress : false,
 	deleteSuccess : false,
 	deleteInProgress : false,
-	searchInProgress: false
+	searchInProgress: false,
+	showModal : false
 };
 
 export default function(state = DEFAULT_STATE, action){	
 	switch(action.type){
 		case types.GET_ALL_DATA:
 			let retrievingInProgress = true;
+			let data = null;
 			if(action.payload.data){
 				retrievingInProgress = false;
+				data = action.payload.data.data;
 			}
-			
+
 			return {
 				...state,
-				employeeData : action.payload.data,
+				employeeData : data,
 				addInProgress : false,
 				addSuccess : false,
 				deleteInProgress : false,
@@ -58,6 +61,16 @@ export default function(state = DEFAULT_STATE, action){
 				...state,
 				deleteInProgress : delProgress,
 				deleteSuccess : delSuccess
+			}
+		case types.SHOW_MODAL:
+			return{
+				...state,
+				showModal: true
+			}
+		case types.HIDE_MODAL:
+			return{
+				...state,
+				showModal : false
 			}
 		default:
 			console.log('state at reducer', state);

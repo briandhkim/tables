@@ -1,11 +1,16 @@
 import React, {Component} from 'react';
 import {Field, reduxForm} from 'redux-form';
 import {connect} from 'react-redux';
-import {getAllData, addEmployee} from '../actions';
+import {getAllData, addEmployee, openModal} from '../actions';
 import {Glyphicon, OverlayTrigger, Button, Popover} from 'react-bootstrap';
 import $ from 'jquery';
 
 class FormAndButtons extends Component{
+	constructor(props){
+		super(props);
+		this.downloadCSV = this.downloadCSV.bind(this);
+	}
+
 	componentDidUpdate(){
 		const {reset, addSuccess, getAllData} = this.props;
 		if(addSuccess){
@@ -15,7 +20,7 @@ class FormAndButtons extends Component{
 	}
 
 	downloadCSV(){
-		const {empData} = this.state;
+		const {employeeData} = this.props;
 
 		function csvOutput(data){
 			let csvContent = "data:text/csv;charset=utf-8,First Name,Last Name,ID,Phone,Supervisor\n";
@@ -31,7 +36,7 @@ class FormAndButtons extends Component{
 			return encodeURI(csvContent);
 		}
 
-		const encoded = csvOutput(empData);
+		const encoded = csvOutput(employeeData);
 
 		let linkElmt = $('<a>',{
 			class: 'csvLink',
@@ -71,8 +76,8 @@ class FormAndButtons extends Component{
 	}
 
 	render(){
-		const {handleSubmit, addInProgress} = this.props;
-		console.log('formAndButtons.js props: ', this.props);
+		const {handleSubmit, addInProgress, retrievingInProgress, openModal} = this.props;
+		// console.log('formAndButtons.js props: ', this.props);
 		const csvPopover = (
 			<Popover id="popover-trigger-hover-focus">
 				download as CSV
@@ -96,9 +101,14 @@ class FormAndButtons extends Component{
 						</span>
 					</Button>
 					<Button className='btn-primary btn-block' >
-						Load All
+						<span className={`${retrievingInProgress ? 'show' : 'hidden'}`}>
+							Loading... <i className="fa fa-spinner fa-pulse fa-lg fa-fw"></i>
+						</span>
+						<span className={`${retrievingInProgress ? 'hidden' : 'show'}`}>
+							Load All
+						</span>
 					</Button>
-					<Button className='btn-info btn-block' >
+					<Button className='btn-info btn-block' onClick={openModal}>
 						Search
 					</Button>
 					<OverlayTrigger trigger={['hover','focus']} placement="left" overlay={csvPopover}>
@@ -119,7 +129,8 @@ function mapStateToProps(state){
 	return{
 		addInProgress : table.addInProgress,
 		addSuccess : table.addSuccess,
-		employeeData : table.employeeData
+		employeeData : table.employeeData,
+		retrievingInProgress : table.retrievingInProgress
 	}
 }
 
@@ -142,4 +153,4 @@ FormAndButtons = reduxForm({
 	validate: validation
 })(FormAndButtons);
 
-export default connect(mapStateToProps, {getAllData, addEmployee})(FormAndButtons);
+export default connect(mapStateToProps, {getAllData, addEmployee, openModal})(FormAndButtons);

@@ -71,3 +71,10 @@ export function deleteEmployee(id){
 		payload: request
 	}
 }
+
+export function openModal(){
+	return{type: types.SHOW_MODAL}
+}
+export function hideModal(){
+	return{type: types.HIDE_MODAL}
+}
