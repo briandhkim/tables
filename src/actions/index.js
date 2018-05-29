@@ -24,7 +24,7 @@ export function retrievingData(){
 }
 
 export function addEmployee(values){
-	console.log('values at actions index', values);
+	// console.log('values at actions index', values);
 	const {name, phone, supervisor} = values;
 	const nameFilter = name.split(' ');
 	let firstName = '';
