@@ -41,7 +41,7 @@ export default function(state = DEFAULT_STATE, action){
 				retrievingInProgress : true
 			}
 		case types.ADD_EMPLOYEE:
-			console.log(action.payload.data);
+			// console.log(action.payload.data);
 			const addingSuccess = action.payload.data.success;
 			const errorMsgs = action.payload.data.errors;
 			let addingProgress = true;
@@ -138,7 +138,7 @@ export default function(state = DEFAULT_STATE, action){
 				errorMessage : ''
 			}
 		default:
-			console.log('state at reducer', state);
+			// console.log('state at reducer', state);
 			return state;
 	}
 }
