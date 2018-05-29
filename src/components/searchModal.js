@@ -45,7 +45,7 @@ class SearchModal extends Component{
 							Searching... <i className="fa fa-spinner fa-pulse fa-lg fa-fw"></i>
 						</span>
 						<span className={`${searchInProgress ? 'hidden' : ''}`}>
-							Search <i class="fa fa-pied-piper" aria-hidden="true"></i>
+							Search <i className="fa fa-pied-piper" aria-hidden="true"></i>
 						</span>
 					</Button>
 					<span className={`text-danger ${errorMessage ? '' : 'hidden'}`}>
