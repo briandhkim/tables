@@ -18,7 +18,7 @@ export default function(state = DEFAULT_STATE, action){
 			if(action.payload.data){
 				retrievingInProgress = false;
 			}
-
+			
 			return {
 				...state,
 				employeeData : action.payload.data,
