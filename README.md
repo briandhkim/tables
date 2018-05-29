@@ -2,8 +2,9 @@
 
 - ### Front End
   * React
+  * Redux
   * Axios
- 
+  * Bootstrap
 
 - ### [Back End](https://github.com/briandhkim/phpTable)
   * PHP
