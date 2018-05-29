@@ -33,7 +33,8 @@ export default function(state = DEFAULT_STATE, action){
 				deleteInProgress : false,
 				deleteSuccess : false,
 				retrievingInProgress : retrievingInProgress,
-				noResult : null
+				noResult : null,
+				errorMessage : ''
 			}
 		case types.RETRIEVING_DATA:
 			return{
@@ -83,7 +84,8 @@ export default function(state = DEFAULT_STATE, action){
 			return{
 				...state,
 				deleteInProgress : delProgress,
-				deleteSuccess : delSuccess
+				deleteSuccess : delSuccess,
+				errorMessage : ''
 			}
 		case types.SEARCH_EMPLOYEE:
 			// console.log('payload data at search employee', action.payload.data);
@@ -112,7 +114,8 @@ export default function(state = DEFAULT_STATE, action){
 			}else{
 				return{
 					...state,
-					searchInProgress : searchInProgress
+					searchInProgress : searchInProgress,
+					errorMessage : ''
 				}
 			}
 		case types.SHOW_ERROR_MODAL:
@@ -128,7 +131,8 @@ export default function(state = DEFAULT_STATE, action){
 		case types.SHOW_MODAL:
 			return{
 				...state,
-				showModal: true
+				showModal: true,
+				errorMessage : ''
 			}
 		case types.HIDE_MODAL:
 			return{
