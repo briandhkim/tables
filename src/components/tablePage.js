@@ -70,7 +70,7 @@ class TablePage extends Component{
 				</div>
 				<Modal show={showModal} onHide={hideModal}>
 					<Modal.Header closeButton className='bg-success'>
-						<Modal.Title>Search Employee</Modal.Title>
+						<Modal.Title>Search Employee <i className="fa fa-pied-piper-alt fa-lg" aria-hidden="true"></i></Modal.Title>
 						<Modal.Body>
 							<SearchModal />
 						</Modal.Body>
