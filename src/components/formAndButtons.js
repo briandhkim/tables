@@ -1,11 +1,19 @@
 import React, {Component} from 'react';
 import {Field, reduxForm} from 'redux-form';
 import {connect} from 'react-redux';
-import {addEmployee} from '../actions';
+import {getAllData, addEmployee} from '../actions';
 import {Glyphicon, OverlayTrigger, Button, Popover} from 'react-bootstrap';
 import $ from 'jquery';
 
 class FormAndButtons extends Component{
+	componentDidUpdate(){
+		const {reset, addSuccess, getAllData} = this.props;
+		if(addSuccess){
+			reset();
+			getAllData();
+		}
+	}
+
 	downloadCSV(){
 		const {empData} = this.state;
 
@@ -58,11 +66,13 @@ class FormAndButtons extends Component{
 	}
 
 	submitEmployee(values){
-		console.log(values);
+		// console.log(values);
+		this.props.addEmployee(values);
 	}
 
 	render(){
-		const {handleSubmit, reset} = this.props;
+		const {handleSubmit, addInProgress} = this.props;
+		console.log('formAndButtons.js props: ', this.props);
 		const csvPopover = (
 			<Popover id="popover-trigger-hover-focus">
 				download as CSV
@@ -78,7 +88,12 @@ class FormAndButtons extends Component{
 					<Field name='supervisor' component={this.renderInput} type='text' placeholder='Supervisor' label='Supervisor' />
 
 					<Button className='btn-success btn-block empAddBtn'onClick={handleSubmit( (val)=>{this.submitEmployee(val)} )}>
-						Add
+						<span className={`${addInProgress ? 'show' : 'hidden'}`}>
+							Adding... <i className="fa fa-spinner fa-pulse fa-lg fa-fw"></i>
+						</span>
+						<span className={`${addInProgress ? 'hidden' : 'show'}`}>
+							Add
+						</span>
 					</Button>
 					<Button className='btn-primary btn-block' >
 						Load All
@@ -97,6 +112,15 @@ class FormAndButtons extends Component{
 		
 	}
 
+}
+
+function mapStateToProps(state){
+	const tableState = state.table;
+	return{
+		addInProgress : tableState.addInProgress,
+		addSuccess : tableState.addSuccess,
+		employeeData : tableState.employeeData
+	}
 }
 
 function validation(values){
@@ -118,4 +142,4 @@ FormAndButtons = reduxForm({
 	validate: validation
 })(FormAndButtons);
 
-export default connect(null, {addEmployee})(FormAndButtons);
+export default connect(mapStateToProps, {getAllData, addEmployee})(FormAndButtons);

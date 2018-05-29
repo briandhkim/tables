@@ -2,7 +2,7 @@ import React, {Component} from 'react';
 // import firebase from './firebase/firebase';
 import axios from 'axios';
 import qs from 'qs';
-import {PageHeader, Table, FormControl, FormGroup, Button, Glyphicon, Modal, Label, Popover, OverlayTrigger} from 'react-bootstrap';
+import {PageHeader, Table, FormControl, FormGroup, Button, Glyphicon, Modal, Label} from 'react-bootstrap';
 import $ from 'jquery';
 import TableData from './tableData';
 import SearchModal from './searchModal';
@@ -176,16 +176,17 @@ class TablePage extends Component{
 	}
 	render(){
 		const{employeeData} = this.props;
-		console.log('employee data at tablePage render', employeeData);
+		console.log('props at tablePage.js', this.props);
+		let tableRows;
+		if(employeeData && employeeData.success){
+			tableRows = employeeData.data ? employeeData.data.map((emp, idx)=>{
+				return <TableData key={idx} index={idx} employee={emp} refreshData={this.getAllData}/>
+			}):<tr></tr>;
+		}
+	
+
 		const {empData, addError, addProgress, loadAllProgress} = this.state;
-		const tableRows = empData ? empData.map((emp, idx)=>{
-			return <TableData key={idx} index={idx} employee={emp} refreshData={this.getAllData}/>
-		}):<tr></tr>;
-		const csvPopover = (
-			<Popover id="popover-trigger-hover-focus">
-				download as CSV
-			</Popover>
-		);
+		
 		return(
 			<div className='container-fluid'>
 				<div className='page-header col-xs-12 col-sm-10 col-sm-offset-1'>
@@ -209,7 +210,7 @@ class TablePage extends Component{
 					</h3>
 				</div>
 
-				<FormAndButtons />
+				<FormAndButtons  />
 
 				<div className='col-sm-12 col-md-8 col-md-pull-1 table-responsive'>
 					<Table striped bordered condensed hover>
@@ -224,7 +225,7 @@ class TablePage extends Component{
 						</thead>
 						
 						<tbody className='text-center'>
-							{tableRows}
+							{tableRows ? tableRows : <tr></tr>}
 						</tbody>
 						
 					</Table>
