@@ -17,6 +17,12 @@ export function getAllData(){
 	}
 }
 
+export function retrievingData(){
+	return{
+		type: types.RETRIEVING_DATA
+	}
+}
+
 export function addEmployee(values){
 	console.log('values at actions index', values);
 	const {name, phone, supervisor} = values;
@@ -46,6 +52,22 @@ export function addEmployee(values){
 
 	return{
 		type: types.ADD_EMPLOYEE,
+		payload: request
+	}
+}
+
+export function deleteEmployee(id){
+	const data = {
+		action 		: 	types.DELETE_EMPLOYEE,
+		employee_id : 	id
+	}
+
+	const request = axios.delete(url,{
+		data : qs.stringify(data)
+	});
+
+	return{
+		type: types.DELETE_EMPLOYEE,
 		payload: request
 	}
 }

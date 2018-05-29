@@ -1,4 +1,6 @@
 export default{
 	GET_ALL_DATA	: 	'get_all_data',
-	ADD_EMPLOYEE	: 	'add_employee'
+	RETRIEVING_DATA : 	'retrieving_data',
+	ADD_EMPLOYEE	: 	'add_employee',
+	DELETE_EMPLOYEE : 	'delete_by_id'
 };

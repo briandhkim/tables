@@ -25,8 +25,6 @@ class TablePage extends Component{
 			addProgress: false,
 			loadAllProgress: true
 		}
-		this.getAllData = this.getAllData.bind(this);
-		this.setEmpData = this.setEmpData.bind(this);
 		this.handleEmployeeAdd = this.handleEmployeeAdd.bind(this);
 		this.empNameInput = this.empNameInput.bind(this);
 		this.empPhoneInput = this.empPhoneInput.bind(this);
@@ -41,33 +39,7 @@ class TablePage extends Component{
 		// this.getAllData();
 		this.props.getAllData();
 	}
-	getAllData(){
-		const action = 'get_all_data';
-		const url = 'https://piedpiper.briandhkim.fun/table/access.php?action=';
-		axios({
-			url: `${url}${action}`,
-			method: 'GET'
-		})
-		.then((res)=>{
-			// console.log(res.data);
-			const response = res.data;
-			if(response.success){
-				this.setEmpData(response.data);
-			}else{
-				console.log(response.errors);
-			}
-		})
-		.catch((err)=>{
-			console.log(err);
-		})
-	}
-	setEmpData(data){
-		// console.log(data);
-		this.setState({
-			empData : data,
-			loadAllProgress: false
-		});
-	}
+	
 	handleEmployeeAdd(e){
 		e.preventDefault();
 		const {empName, empPhone, empSuper} = this.state;

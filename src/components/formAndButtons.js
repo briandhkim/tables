@@ -115,11 +115,11 @@ class FormAndButtons extends Component{
 }
 
 function mapStateToProps(state){
-	const tableState = state.table;
+	const table = state.table;
 	return{
-		addInProgress : tableState.addInProgress,
-		addSuccess : tableState.addSuccess,
-		employeeData : tableState.employeeData
+		addInProgress : table.addInProgress,
+		addSuccess : table.addSuccess,
+		employeeData : table.employeeData
 	}
 }
 
