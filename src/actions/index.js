@@ -94,7 +94,7 @@ export function searchEmployee(values){
 	let request = null;
 	if(employeeID && employeeID.length){
 		request = searchByID(employeeID);
-	}else if(firstName.length || lastName.length){
+	}else if( (firstName&&firstName.length) || (lastName&&lastName.length) ){
 		request = searchByName(firstName, lastName);
 	}
 
