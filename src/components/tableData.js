@@ -1,8 +1,6 @@
 import React, {Component} from 'react';
 import {connect} from 'react-redux';
 import { getAllData, deleteEmployee, retrievingData } from '../actions';
-// import axios from 'axios';
-// import qs from 'qs';
 import {Button} from 'react-bootstrap';
 
 class TableData extends Component{
@@ -10,7 +8,6 @@ class TableData extends Component{
 		super(props);
 		this.deleteEmp = this.deleteEmp.bind(this);
 	}
-
 	
 	componentDidUpdate(){
 		const {deleteSuccess, getAllData, retrievingInProgress, retrievingData} = this.props;
@@ -40,7 +37,6 @@ class TableData extends Component{
 	}
 
 	render(){
-
 		const {employee, deleteEmployee} = this.props;
 
 		const employeeStringFormat = this.formatData(employee);
@@ -71,5 +67,4 @@ function mapStateToProps(state){
 	}
 }
 
-// export default TableData;
 export default connect( mapStateToProps, {getAllData, deleteEmployee, retrievingData} )(TableData);

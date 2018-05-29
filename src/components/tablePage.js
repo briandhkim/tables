@@ -1,4 +1,6 @@
 import React, {Component} from 'react';
+import { connect } from 'react-redux';
+import { getAllData, openModal, hideModal } from '../actions/index';
 import {PageHeader, Table, FormControl, FormGroup, Button, Glyphicon, Modal, Label} from 'react-bootstrap';
 import $ from 'jquery';
 import TableData from './tableData';
@@ -6,47 +8,22 @@ import SearchModal from './searchModal';
 import './tablePage.css';
 import FormAndButtons from './formAndButtons';
 
-import { connect } from 'react-redux';
-import { getAllData, openModal, hideModal } from '../actions/index';
+
 
 class TablePage extends Component{
 	constructor(props){
 		super(props);
-		this.state={
-			empData: null,
-			empName: '',
-			empPhone: '',
-			empSuper: '',
-			addError: false,
-			modalShow: false,
-			addProgress: false,
-			loadAllProgress: true
-		}
-		this.showModal = this.showModal.bind(this);
-		this.closeModal = this.closeModal.bind(this);
 	}
 
 	componentDidMount(){
-		// this.getAllData();
 		this.props.getAllData();
 	}
 	
-	
-	showModal(){
-		this.setState({modalShow:true});
-	}
-	closeModal(){
-		this.setState({modalShow:false});
-	}
 	render(){
-		const{employeeData, hideModal, showModal} = this.props;
+		const{employeeData, hideModal, showModal, showErrorModal, errorMessage} = this.props;
 		const tableRows = employeeData ? employeeData.map((emp, idx)=>{
 			return <TableData key={idx} index={idx} employee={emp} refreshData={this.getAllData}/>
 		}):<tr></tr>;
-
-	
-
-		const {empData, addError, addProgress, loadAllProgress} = this.state;
 		
 		return(
 			<div className='container-fluid'>
@@ -92,10 +69,19 @@ class TablePage extends Component{
 					</Table>
 				</div>
 				<Modal show={showModal} onHide={hideModal}>
-					<Modal.Header closeButton>
+					<Modal.Header closeButton className='bg-success'>
 						<Modal.Title>Search Employee</Modal.Title>
 						<Modal.Body>
 							<SearchModal />
+						</Modal.Body>
+					</Modal.Header>
+
+				</Modal>
+				<Modal show={showErrorModal} onHide={hideModal}>
+					<Modal.Header closeButton className='bg-warning'>
+						<Modal.Title>Error Message</Modal.Title>
+						<Modal.Body className='text-danger'>
+							{errorMessage}
 						</Modal.Body>
 					</Modal.Header>
 
@@ -109,9 +95,10 @@ function mapStateToProps(state){
 	return {
 		employeeData: state.table.employeeData,
 		retrievingInProgress: state.table.retrievingInProgress,
-		showModal : state.table.showModal
+		showModal : state.table.showModal,
+		showErrorModal : state.table.showErrorModal,
+		errorMessage : state.table.errorMessage
 	}
 }
 
-// export default TablePage;
 export default connect(mapStateToProps, {getAllData, openModal, hideModal})(TablePage);

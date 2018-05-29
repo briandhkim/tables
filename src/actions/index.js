@@ -72,6 +72,46 @@ export function deleteEmployee(id){
 	}
 }
 
+export function searchEmployee(values){
+	function searchByID(employeeID){
+		const id = employeeID;
+		return 	axios({
+					url : `${url}?action=search_by_id&employee_id=${id}`,
+					method : 'GET'
+				});
+	}
+
+	function searchByName(firstName = '', lastName = ''){
+		const firstN = firstName;
+		const lastN = lastName;
+		return	axios({
+					url : `${url}?action=search_by_name&first_name=${firstN}&last_name=${lastN}`,
+					method : 'GET'
+				});
+	}
+
+	const {firstName, lastName, employeeID} = values;
+	let request = null;
+	if(employeeID && employeeID.length){
+		request = searchByID(employeeID);
+	}else if(firstName.length || lastName.length){
+		request = searchByName(firstName, lastName);
+	}
+
+	return{
+		type: types.SEARCH_EMPLOYEE,
+		payload: request
+	}
+}
+export function openErrorModal(){
+	return{type: types.SHOW_ERROR_MODAL}
+}
+export function setErrorMessage(msg){
+	return{
+		type: types.SET_ERROR_MESSAGE,
+		payload: msg
+	}
+}
 export function openModal(){
 	return{type: types.SHOW_MODAL}
 }

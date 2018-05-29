@@ -12,10 +12,13 @@ class FormAndButtons extends Component{
 	}
 
 	componentDidUpdate(){
-		const {reset, addSuccess, getAllData} = this.props;
+		const {reset, addSuccess, getAllData, errorMessage} = this.props;
 		if(addSuccess){
 			reset();
 			getAllData();
+		}
+		if(errorMessage.length){
+			reset();
 		}
 	}
 
@@ -71,13 +74,11 @@ class FormAndButtons extends Component{
 	}
 
 	submitEmployee(values){
-		// console.log(values);
 		this.props.addEmployee(values);
 	}
 
 	render(){
-		const {handleSubmit, addInProgress, retrievingInProgress, openModal} = this.props;
-		// console.log('formAndButtons.js props: ', this.props);
+		const {handleSubmit, addInProgress, retrievingInProgress, openModal, getAllData} = this.props;
 		const csvPopover = (
 			<Popover id="popover-trigger-hover-focus">
 				download as CSV
@@ -93,15 +94,15 @@ class FormAndButtons extends Component{
 					<Field name='supervisor' component={this.renderInput} type='text' placeholder='Supervisor' label='Supervisor' />
 
 					<Button className='btn-success btn-block empAddBtn'onClick={handleSubmit( (val)=>{this.submitEmployee(val)} )}>
-						<span className={`${addInProgress ? 'show' : 'hidden'}`}>
+						<span className={`${addInProgress ? 'show' : 'hidden'}`} disabled={`${addInProgress ? 'disabled' : ''}`}>
 							Adding... <i className="fa fa-spinner fa-pulse fa-lg fa-fw"></i>
 						</span>
 						<span className={`${addInProgress ? 'hidden' : 'show'}`}>
 							Add
 						</span>
 					</Button>
-					<Button className='btn-primary btn-block' >
-						<span className={`${retrievingInProgress ? 'show' : 'hidden'}`}>
+					<Button className='btn-primary btn-block' onClick={getAllData}>
+						<span className={`${retrievingInProgress ? 'show' : 'hidden'}`} disabled={`${retrievingInProgress ? 'disabled' : ''}`}>
 							Loading... <i className="fa fa-spinner fa-pulse fa-lg fa-fw"></i>
 						</span>
 						<span className={`${retrievingInProgress ? 'hidden' : 'show'}`}>
@@ -130,7 +131,8 @@ function mapStateToProps(state){
 		addInProgress : table.addInProgress,
 		addSuccess : table.addSuccess,
 		employeeData : table.employeeData,
-		retrievingInProgress : table.retrievingInProgress
+		retrievingInProgress : table.retrievingInProgress,
+		errorMessage : table.errorMessage
 	}
 }
 
