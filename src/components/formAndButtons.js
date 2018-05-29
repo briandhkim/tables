@@ -1,7 +1,7 @@
 import React, {Component} from 'react';
 import {Field, reduxForm} from 'redux-form';
 import {connect} from 'react-redux';
-import {getAllData, addEmployee, openModal} from '../actions';
+import {getAllData, addEmployee, openModal, openErroModal, setErrorMessage} from '../actions';
 import {Glyphicon, OverlayTrigger, Button, Popover} from 'react-bootstrap';
 import $ from 'jquery';
 
@@ -74,11 +74,16 @@ class FormAndButtons extends Component{
 	}
 
 	submitEmployee(values){
-		this.props.addEmployee(values);
+		const{name, phone, supervisor} = values;
+		if(!name || !phone || !supervisor){
+			this.props.setErrorMessage('Fill in all fields')
+		}else{
+			this.props.addEmployee(values);
+		}
 	}
 
 	render(){
-		const {handleSubmit, addInProgress, retrievingInProgress, openModal, getAllData} = this.props;
+		const {handleSubmit, addInProgress, retrievingInProgress, openModal, getAllData, errorMessage} = this.props;
 		const csvPopover = (
 			<Popover id="popover-trigger-hover-focus">
 				download as CSV
@@ -93,12 +98,15 @@ class FormAndButtons extends Component{
 					<Field name='phone' component={this.renderInput} type='text' placeholder='Employee Phone' label='Phone Number' />
 					<Field name='supervisor' component={this.renderInput} type='text' placeholder='Supervisor' label='Supervisor' />
 
+					<p className={`text-danger ${errorMessage ? 'show' : 'hidden'}`}>
+						{errorMessage}
+					</p>
 					<Button className='btn-success btn-block empAddBtn'onClick={handleSubmit( (val)=>{this.submitEmployee(val)} )}>
 						<span className={`${addInProgress ? 'show' : 'hidden'}`} disabled={`${addInProgress ? 'disabled' : ''}`}>
 							Adding... <i className="fa fa-spinner fa-pulse fa-lg fa-fw"></i>
 						</span>
 						<span className={`${addInProgress ? 'hidden' : 'show'}`}>
-							Add
+							Add <i class="fa fa-pied-piper" aria-hidden="true"></i>
 						</span>
 					</Button>
 					<Button className='btn-primary btn-block' onClick={getAllData}>
@@ -155,4 +163,4 @@ FormAndButtons = reduxForm({
 	validate: validation
 })(FormAndButtons);
 
-export default connect(mapStateToProps, {getAllData, addEmployee, openModal})(FormAndButtons);
+export default connect(mapStateToProps, {getAllData, addEmployee, openModal, openErroModal, setErrorMessage})(FormAndButtons);

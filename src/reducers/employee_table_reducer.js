@@ -61,7 +61,8 @@ export default function(state = DEFAULT_STATE, action){
 			return{
 				...state,
 				addInProgress : addingProgress,
-				addSuccess : addingSuccess
+				addSuccess : addingSuccess,
+				errorMessage : ''
 			}
 		case types.DELETE_EMPLOYEE:
 			// console.log('payload data at delete employee', action.payload.data);
